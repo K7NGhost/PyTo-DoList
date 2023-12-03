@@ -23,7 +23,7 @@ class GUIManagers:
         remove_button = Button(self.main_frame, text="remove", fg='black', command=self.remove_screen, width=self.button_width, height=self.button_height)
         remove_button.pack(side=TOP, pady=10)
 
-        complete_button = Button(self.main_frame, text="mark complete", fg='black', command=self.show_alternate_screen, width=self.button_width, height=self.button_height)
+        complete_button = Button(self.main_frame, text="mark complete", fg='black', command=self.complete_screen, width=self.button_width, height=self.button_height)
         complete_button.pack(side=TOP, pady=10)
 
         clear_button = Button(self.main_frame, text="clear tasks", fg='black', command=someTask.clear, width=self.button_width, height=self.button_height)
@@ -60,6 +60,20 @@ class GUIManagers:
         back_button = Button(remove_frame, text="Back", command=self.show_main_screen)
         back_button.pack(pady=10)
 
+    def complete_screen(self):
+        self.main_frame.destroy()
+        complete_frame = Frame(self.root)
+        complete_frame.pack(fill=BOTH, expand=True)
+        label = Label(complete_frame, text="Enter index of task to mark done")
+        label.pack(pady=20)
+        self.index_entry = Entry(complete_frame, width=10)
+        self.index_entry.pack(pady=10)
+
+        save_button = Button(complete_frame, text="Save", command=self.complete_index)
+        save_button.pack(pady=10)
+        back_button = Button(complete_frame, text="Back", command=self.show_main_screen)
+        back_button.pack(pady=10)
+
     def show_main_screen(self):
         self.clear_all_frames()
         self.root.geometry("400x300")
@@ -71,7 +85,7 @@ class GUIManagers:
         remove_button = Button(self.main_frame, text="remove", fg='black', command=self.remove_screen, width=self.button_width, height=self.button_height)
         remove_button.pack(side=TOP, pady=10)
 
-        complete_button = Button(self.main_frame, text="mark complete", fg='black', command=self.show_alternate_screen, width=self.button_width, height=self.button_height)
+        complete_button = Button(self.main_frame, text="mark complete", fg='black', command=self.complete_screen, width=self.button_width, height=self.button_height)
         complete_button.pack(side=TOP, pady=10)
 
         clear_button = Button(self.main_frame, text="clear tasks", fg='black', command=someTask.clear, width=self.button_width, height=self.button_height)
@@ -90,3 +104,8 @@ class GUIManagers:
         index_num = int(index_text)
         print('num: ', index_num)
         someTask.remove(index_num)
+    def complete_index(self):
+        index_text = self.index_entry.get()
+        print(index_text)
+        index_num = int(index_text)
+        someTask.mark_done(index_num)
