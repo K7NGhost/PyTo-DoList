@@ -1,5 +1,3 @@
-from opcode import opname
-
 
 class task:
     def __init__(self, task_lists=[], priority='low priority'):
