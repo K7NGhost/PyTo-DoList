@@ -1,23 +1,8 @@
-from tasks import task
+from GUIManager import GUIManagers
 from tkinter import *
 
 gui = Tk()
-gui.geometry('400x300')
-gui.title("TO DO List")
-taskManager = task()
-
-button_height = 2
-button_width = 15
-
-add_button = Button(gui, text="add", fg='black', command=lambda: taskManager.add("hello world"), width=button_width, height=button_height)
-add_button.pack(side=TOP, pady=(50, 10))
-
-remove_button = Button(gui, text="remove", fg='black', command=lambda: taskManager.add("hello world"), width=button_width, height=button_height)
-remove_button.pack(side=TOP, pady=10)
-
-complete_button = Button(gui, text="mark complete", fg='black', command=lambda: taskManager.add("hello world"), width=button_width, height=button_height)
-complete_button.pack(side=TOP, pady=10)
-
+program = GUIManagers(gui)
 gui.mainloop()
 
 # while True:
