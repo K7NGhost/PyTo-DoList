@@ -54,6 +54,7 @@ class GUIManagers:
         self.high_button = Button(button_frame, text="High Priority", command=lambda: self.set_priority("High"))
         self.high_button.pack(side=LEFT, padx=10)
 
+
         #something to reference in the show_main_screen
         self.alternate_frame = alternate_frame
 
@@ -106,9 +107,13 @@ class GUIManagers:
             if widget != self.main_frame:
                 widget.destroy()
     def save_task(self):
+        if self.selected_priority is None:
+            print("priority is not set. select one")
+            return
+        
         task_text = self.task_entry.get()
-        print("Task saved: ", task_text)
-        someTask.add(task_text)
+        print("Task saved with priority: ", task_text, self.selected_priority)
+        someTask.add(task_text, self.selected_priority)
     def save_index(self):
         index_text = self.index_entry.get()
         print(index_text)
@@ -121,42 +126,31 @@ class GUIManagers:
         index_num = int(index_text)
         someTask.mark_done(index_num)
 
-    def set_priority(self, priority):
-        # Reset the visual state of previously selected button
+    def set_priority(self, priority=None):
+        # Reset the visual state of all buttons
         if self.selected_priority:
-            self.reset_button_state(self.selected_priority)
+            self.reset_button_state()
 
         # Set the new selected button
         self.selected_priority = priority
-        self.update_button_state(priority)
+        self.update_button_state()
+
         # Implement your priority setting logic here
         print(f"Priority set to {priority}")
+        return priority
 
-    def update_button_state(self, priority):
-        # Change the appearance of the selected button to look pressed down
-        if priority == "Low":
-            self.update_button_appearance("Low", state=ACTIVE)
-            self.update_button_appearance("Medium", state=NORMAL)
-            self.update_button_appearance("High", state=NORMAL)
-        elif priority == "Medium":
-            self.update_button_appearance("Low", state=NORMAL)
-            self.update_button_appearance("Medium", state=ACTIVE)
-            self.update_button_appearance("High", state=NORMAL)
-        elif priority == "High":
-            self.update_button_appearance("Low", state=NORMAL)
-            self.update_button_appearance("Medium", state=NORMAL)
-            self.update_button_appearance("High", state=ACTIVE)
+    def update_button_state(self):
+        # Change the relief of the selected button to 'sunken'
+        if self.selected_priority == "Low":
+            self.low_button.config(relief=SUNKEN)
+        elif self.selected_priority == "Medium":
+            self.medium_button.config(relief=SUNKEN)
+        elif self.selected_priority == "High":
+            self.high_button.config(relief=SUNKEN)
 
-    def reset_button_state(self, priority):
-        # Reset the appearance of the previously selected button
-        self.update_button_appearance(priority, state=NORMAL)
+    def reset_button_state(self):
+        # Reset the relief of all buttons to 'raised'
+        self.low_button.config(relief=RAISED)
+        self.medium_button.config(relief=RAISED)
+        self.high_button.config(relief=RAISED)
 
-    def update_button_appearance(self, priority, **kwargs):
-        # Helper function to update button appearance
-        print(f"Updating button appearance for {priority} with kwargs: {kwargs}")
-        if priority == "Low":
-            self.low_button.config(**kwargs)
-        elif priority == "Medium":
-            self.medium_button.config(**kwargs)
-        elif priority == "High":
-            self.high_button.config(**kwargs)
