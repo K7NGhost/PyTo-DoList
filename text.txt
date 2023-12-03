@@ -1,9 +1,5 @@
   Index           Task           Priority         Date Added       Check   
-    1             how          low priority       03-12-2023               
-    2             how          low priority       03-12-2023         ✓     
-    3             how          low priority       03-12-2023         ✓     
-    4             how          low priority       03-12-2023         ✓     
-    5             how          low priority       03-12-2023               
-    6             how          low priority       03-12-2023               
-    7             how          low priority       03-12-2023               
-    8             how          low priority       03-12-2023               
+    1          going home      low priority       03-12-2023               
+    2          go outside      low priority       03-12-2023               
+    3          run later       low priority       03-12-2023         ✓     
+    4          swim later      low priority       03-12-2023               
