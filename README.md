@@ -1,2 +1,5 @@
 # PyTo-DoList
-This program is a personal To-Do list using a text file to write to.
+This program creates a gui that adds, removes, and checks tasks to a text file.
+Make sure to have python 3.12 installed or unexpected bugs may occur
+Currently does not work with mac as the subprocessing is only for notepad will add feature to support mac later
+

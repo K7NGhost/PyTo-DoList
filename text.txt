@@ -1,6 +1,1 @@
   Index           Task           Priority         Date Added       Check   
-    1          go outside      low priority       03-12-2023               
-    2         go swimming      low priority       03-12-2023         ✓     
-    3          go hiking           High           03-12-2023               
-    4          go running           Low           03-12-2023               
-    5     go looking at birds     Medium          03-12-2023               

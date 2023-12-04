@@ -1,5 +1,7 @@
 from tkinter import *
 from tasks import task
+import subprocess
+import threading
 
 someTask = task()
 
@@ -27,7 +29,7 @@ class GUIManagers:
         complete_button = Button(self.main_frame, text="mark complete", fg='black', command=self.complete_screen, width=self.button_width, height=self.button_height)
         complete_button.pack(side=TOP, pady=10)
 
-        clear_button = Button(self.main_frame, text="clear tasks", fg='black', command=someTask.clear, width=self.button_width, height=self.button_height)
+        clear_button = Button(self.main_frame, text="clear tasks", fg='black', command=self.clear, width=self.button_width, height=self.button_height)
         clear_button.pack(side=TOP, pady=10)
 
     def show_alternate_screen(self):
@@ -100,7 +102,7 @@ class GUIManagers:
         complete_button = Button(self.main_frame, text="mark complete", fg='black', command=self.complete_screen, width=self.button_width, height=self.button_height)
         complete_button.pack(side=TOP, pady=10)
 
-        clear_button = Button(self.main_frame, text="clear tasks", fg='black', command=someTask.clear, width=self.button_width, height=self.button_height)
+        clear_button = Button(self.main_frame, text="clear tasks", fg='black', command=self.clear, width=self.button_width, height=self.button_height)
         clear_button.pack(side=TOP, pady=10)
     def clear_all_frames(self):
         for widget in self.root.winfo_children():
@@ -110,22 +112,28 @@ class GUIManagers:
         if self.selected_priority is None:
             print("priority is not set. select one")
             return
-        
         task_text = self.task_entry.get()
         print("Task saved with priority: ", task_text, self.selected_priority)
         someTask.add(task_text, self.selected_priority)
+
+        threading.Thread(target=self.open_notepad).start()
+        
     def save_index(self):
         index_text = self.index_entry.get()
         print(index_text)
         index_num = int(index_text)
         print('num: ', index_num)
         someTask.remove(index_num)
+        threading.Thread(target=self.open_notepad).start()
     def complete_index(self):
         index_text = self.index_entry.get()
         print(index_text)
         index_num = int(index_text)
         someTask.mark_done(index_num)
-
+        threading.Thread(target=self.open_notepad).start()
+    def clear(self):
+        someTask.clear()
+        threading.Thread(target=self.open_notepad).start()
     def set_priority(self, priority=None):
         # Reset the visual state of all buttons
         if self.selected_priority:
@@ -138,6 +146,10 @@ class GUIManagers:
         # Implement your priority setting logic here
         print(f"Priority set to {priority}")
         return priority
+    
+    def open_notepad(self):
+        subprocess.run(["taskkill", "/F", "/IM", "notepad.exe"])
+        subprocess.Popen(['notepad', 'text.txt'])
 
     def update_button_state(self):
         # Change the relief of the selected button to 'sunken'
