@@ -85,6 +85,7 @@ class task:
 
     #clears the text file
     def clear(self):
+        self.task_lists = []
         with open('text.txt', 'w') as file:
             pass
         with open('text.txt', 'a') as file:
