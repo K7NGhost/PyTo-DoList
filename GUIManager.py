@@ -6,6 +6,7 @@ import threading
 someTask = task()
 
 class GUIManagers:
+    #creates the first instance of the gui
     def __init__(self, root):
         self.root = root
         self.root.title("To-Do List")
@@ -32,12 +33,15 @@ class GUIManagers:
         clear_button = Button(self.main_frame, text="clear tasks", fg='black', command=self.clear, width=self.button_width, height=self.button_height)
         clear_button.pack(side=TOP, pady=10)
 
+    #Shows the add frame in the GUI
     def show_alternate_screen(self):
         self.main_frame.destroy()
         alternate_frame = Frame(self.root)
         alternate_frame.pack(fill=BOTH, expand=True)
+
         label = Label(alternate_frame, text="Enter task:")
         label.pack(pady=20)
+
         self.task_entry = Entry(alternate_frame, width=30)
         self.task_entry.pack(pady=10)
 
@@ -60,12 +64,15 @@ class GUIManagers:
         #something to reference in the show_main_screen
         self.alternate_frame = alternate_frame
 
+    #Switches to the remove frame
     def remove_screen(self):
         self.main_frame.destroy()
         remove_frame = Frame(self.root)
         remove_frame.pack(fill=BOTH, expand=True)
+
         label = Label(remove_frame, text="Enter index of task to remove")
         label.pack(pady=20)
+
         self.index_entry = Entry(remove_frame, width=10)
         self.index_entry.pack(pady=10)
 
@@ -78,8 +85,10 @@ class GUIManagers:
         self.main_frame.destroy()
         complete_frame = Frame(self.root)
         complete_frame.pack(fill=BOTH, expand=True)
+
         label = Label(complete_frame, text="Enter index of task to mark done")
         label.pack(pady=20)
+
         self.index_entry = Entry(complete_frame, width=10)
         self.index_entry.pack(pady=10)
 
@@ -93,21 +102,23 @@ class GUIManagers:
         self.root.geometry("400x300")
         self.main_frame = Frame(self.root)
         self.main_frame.pack(fill=BOTH, expand=True)
+
         add_button = Button(self.main_frame, text="add", fg='black', command=self.show_alternate_screen, width=self.button_width, height=self.button_height)
         add_button.pack(side=TOP, pady=(50, 10))
-
         remove_button = Button(self.main_frame, text="remove", fg='black', command=self.remove_screen, width=self.button_width, height=self.button_height)
         remove_button.pack(side=TOP, pady=10)
-
         complete_button = Button(self.main_frame, text="mark complete", fg='black', command=self.complete_screen, width=self.button_width, height=self.button_height)
         complete_button.pack(side=TOP, pady=10)
-
         clear_button = Button(self.main_frame, text="clear tasks", fg='black', command=self.clear, width=self.button_width, height=self.button_height)
         clear_button.pack(side=TOP, pady=10)
+
+    #destroy a frame
     def clear_all_frames(self):
         for widget in self.root.winfo_children():
             if widget != self.main_frame:
                 widget.destroy()
+    
+    #Adds the task to the text file
     def save_task(self):
         if self.selected_priority is None:
             print("priority is not set. select one")
@@ -117,7 +128,7 @@ class GUIManagers:
         someTask.add(task_text, self.selected_priority)
 
         threading.Thread(target=self.open_notepad).start()
-        
+    
     def save_index(self):
         index_text = self.index_entry.get()
         print(index_text)
@@ -125,15 +136,18 @@ class GUIManagers:
         print('num: ', index_num)
         someTask.remove(index_num)
         threading.Thread(target=self.open_notepad).start()
+    
     def complete_index(self):
         index_text = self.index_entry.get()
         print(index_text)
         index_num = int(index_text)
         someTask.mark_done(index_num)
         threading.Thread(target=self.open_notepad).start()
+
     def clear(self):
         someTask.clear()
         threading.Thread(target=self.open_notepad).start()
+    
     def set_priority(self, priority=None):
         # Reset the visual state of all buttons
         if self.selected_priority:
@@ -148,6 +162,7 @@ class GUIManagers:
         return priority
     
     def open_notepad(self):
+        #finds notepad.exe a kill it before running next notepad
         subprocess.run(["taskkill", "/F", "/IM", "notepad.exe"])
         subprocess.Popen(['notepad', 'text.txt'])
 

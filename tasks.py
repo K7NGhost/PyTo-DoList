@@ -1,10 +1,12 @@
 from datetime import datetime
+import threading
 
 class task:
     def __init__(self, task_lists=[], priority='low priority'):
         self.task_lists = task_lists
         self.priority = priority
         self.counter = self.get_last_index() + 1
+        self.file_lock = threading.Lock()
 
         #checks to see if header is already there
         header_exists = False
@@ -25,8 +27,6 @@ class task:
         with open('text.txt', 'r') as file:
             # Read the header line
             file.readline()
-        
-            # Read the remaining lines and store in a list
             lines = file.readlines()
 
             # Check if there are any lines in the file
@@ -43,6 +43,7 @@ class task:
     def add(self, task, priority='low priority'):
         date_added = datetime.now().strftime('%d-%m-%Y')
         self.task_lists.append({'task': task, 'priority':priority, 'date_added': date_added})
+        self.counter = len(self.task_lists)
         with open('text.txt', 'a') as file:
             file.write(f"{self.counter:^10}{task:^20}{priority:^15}{date_added:^20}{' ':^10}\n")
         self.counter += 1
@@ -52,24 +53,32 @@ class task:
         if 1 <= index <= len(self.task_lists):
             removed_task = self.task_lists.pop(index - 1)
 
-            with open('text.txt', 'w') as file:
+            with open('text.txt', 'w', encoding='utf-8') as file:
                 file.write(f"{'Index':^10}{'Task':^20}{'Priority':^15}{'Date Added':^20}{'Check':^10}\n")
                 for i, task_info in enumerate(self.task_lists, start=1):
-                    file.write(f"{i:^10}{task_info['task']:^20}{task_info['priority']:^15}{task_info['date_added']:^20}{' ':^10}\n")
+                    checkmark = '✓' if 'check' in task_info and task_info['check'] == '✓' else ' '
+                    file.write(f"{i:^10}{task_info['task']:^20}{task_info['priority']:^15}{task_info['date_added']:^20}"
+                           f"{checkmark:^10}\n")
             return removed_task
         else:
             print("Invalid index. Please provide a valid index")
     
+    #mark done function self explanatory
     def mark_done(self, index):
         if 1 <= index <= len(self.task_lists):
+        # Update the 'check' field for the specified task index
             self.task_lists[index - 1]['check'] = '✓'
 
             with open('text.txt', 'w', encoding='utf-8') as file:
                 file.write(f"{'Index':^10}{'Task':^20}{'Priority':^15}{'Date Added':^20}{'Check':^10}\n")
                 for i, task_info in enumerate(self.task_lists, start=1):
+                    checkmark = task_info.get('check', ' ')
                     file.write(f"{i:^10}{task_info['task']:^20}{task_info['priority']:^15}{task_info['date_added']:^20}"
-                               f"{task_info.get('check', ' '):^10}\n")
+                           f"{checkmark:^10}\n")
+        else:
+            print("Invalid index. Please provide a valid index")
 
+    #prints the items in the list used for debugging purposes
     def printInfo(self):
         print(f'The tasks in the list are {self.task_lists}')
         print(f'The priority of these tasks are {self.priority}')
