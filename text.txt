@@ -1,8 +1,4 @@
   Index           Task           Priority         Date Added       Check   
-    1            hello             High           04-12-2023               
-    2            hello            Medium          04-12-2023               
-    3            hello            Medium          04-12-2023         ✓     
-    4            hello            Medium          04-12-2023               
-    5            hello            Medium          04-12-2023         ✓     
-    6            hello            Medium          04-12-2023               
-    7            hello            Medium          04-12-2023               
+    1           asdfasdf          Medium          06-12-2023               
+    2           asdfasdf          Medium          06-12-2023         ✓     
+    3            fasdfa            High           06-12-2023         ✓     

@@ -126,7 +126,7 @@ class GUIManagers:
         task_text = self.task_entry.get()
         print("Task saved with priority: ", task_text, self.selected_priority)
         someTask.add(task_text, self.selected_priority)
-
+        someTask.printInfo()
         threading.Thread(target=self.open_notepad).start()
     
     def save_index(self):
