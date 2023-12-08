@@ -4,6 +4,7 @@ import subprocess
 import threading
 
 someTask = task()
+someTask.printInfo
 
 class GUIManagers:
     #creates the first instance of the gui
@@ -142,6 +143,7 @@ class GUIManagers:
         print(index_text)
         index_num = int(index_text)
         someTask.mark_done(index_num)
+        someTask.printInfo()
         threading.Thread(target=self.open_notepad).start()
 
     def clear(self):

@@ -1,4 +1,2 @@
   Index           Task           Priority         Date Added       Check   
-    1           asdfasdf          Medium          06-12-2023               
-    2           asdfasdf          Medium          06-12-2023         ✓     
-    3            fasdfa            High           06-12-2023         ✓     
+    1          go fishing          High           07-12-2023               

@@ -1,12 +1,11 @@
 from datetime import datetime
 import threading
-import re
 
 class task:
     def __init__(self, priority='low priority'):
         self.task_lists = self.load_tasks()
         self.priority = priority
-        self.counter = self.get_last_index() + 1
+        self.counter = int(self.get_last_index()) + 1
         self.file_lock = threading.Lock()
 
         #checks to see if header is already there
@@ -24,22 +23,36 @@ class task:
                 file.write(f"{'Index':^10}{'Task':^20}{'Priority':^15}{'Date Added':^20}{'Check':^10}\n")
 
     def load_tasks(self):
-        tasks = []
-        try:
-            with open('text.txt', 'r') as file:
-                # Skip the header line
-                file.readline()
-                lines = file.readlines()
-                for i, line in enumerate(lines, start=1):
-                    # Use regular expression to extract the task name
-                    match = re.match(r'^\s*(\d+)\s+(.*?)\s+(\S+)\s+(\S+)\s*$', line)
-                    if match:
-                        index, task, priority, date_added = match.groups()
-                        check = '✓' if '✓' in line else ''
-                        tasks.append({'task': task, 'priority': priority, 'date_added': date_added, 'check': check})
-        except FileNotFoundError:
-            pass
-        return tasks
+        task_list = []
+
+        with open('text.txt', 'r', encoding='utf-8') as file:
+            # Skip the header (first line)
+            next(file)
+
+            for line in file:
+                parts = line.strip().split()
+
+                # Find the index of priority keywords (Low, Medium, High)
+                priority_index = next((i for i, part in enumerate(parts) if part in ['Low', 'Medium', 'High']), None)
+
+                if priority_index is not None:
+                    # Combine anything before the priority into the task
+                    task = ' '.join(parts[1:priority_index])
+                    
+                    # Check if the last part indicates a checkmark
+                    check_mark = '✓' if len(parts) > priority_index + 2 and parts[priority_index + 2] == '✓' else ''
+
+                    task_dict = {
+                        'task': task,
+                        'priority': parts[priority_index],
+                        'date_added': parts[priority_index + 1],
+                        'check': check_mark
+                    }
+
+                # Append the task dictionary to the task_list
+                task_list.append(task_dict)
+
+        return task_list
 
 
     #grabs the last index in the list
@@ -53,19 +66,29 @@ class task:
             if lines:
                 # Get the last line and extract the index
                 last_line = lines[-1]
-                last_index = int(last_line.split()[0])
-                return last_index
+                parts = last_line.split()
+                last_index_str = parts[0]
+
+                # Check if the last index is numeric
+                if last_index_str.isdigit():
+                    return int(last_index_str)
+                else:
+                    # If not numeric, return 0
+                    return 0
             else:
                 # If there are no lines, return 0
                 return 0
     
     #Add task to the list
     def add(self, task, priority='low priority'):
+        self.counter = int(self.get_last_index()) + 1
         date_added = datetime.now().strftime('%d-%m-%Y')
-        self.task_lists.append({'task': task, 'priority':priority, 'date_added': date_added})
+        check = ''  # Assuming a new task does not have a checkmark initially
+        self.task_lists.append({'task': task, 'priority': priority, 'date_added': date_added, 'check': check})
+
         with open('text.txt', 'a') as file:
-            file.write(f"{self.counter:^10}{task:^20}{priority:^15}{date_added:^20}{' ':^10}\n")
-        self.counter += 1
+            file.write(f"{self.counter:^10}{task:^20}{priority:^15}{date_added:^20}{check:^10}\n")
+
 
     #remove a task based on the index num
     def remove(self, index):
@@ -84,14 +107,15 @@ class task:
     #mark done function self explanatory
     def mark_done(self, index):
         if 1 <= index <= len(self.task_lists):
-        # Update the 'check' field for the specified task index
+            # Update the 'check' field for the specified task index
             self.task_lists[index - 1]['check'] = '✓'
 
             with open('text.txt', 'w', encoding='utf-8') as file:
                 file.write(f"{'Index':^10}{'Task':^20}{'Priority':^15}{'Date Added':^20}{'Check':^10}\n")
                 for i, task_info in enumerate(self.task_lists, start=1):
-                    checkmark = task_info.get('check', ' ')
-                    file.write(f"{i:^10}{task_info['task']:^20}{task_info['priority']:^15}{task_info['date_added']:^20}"f"{checkmark:^10}\n")
+                    checkmark = '✓' if task_info.get('check') == '✓' else ''
+                    file.write(f"{i:^10}{task_info['task']:^20}{task_info['priority']:^15}{task_info['date_added']:^20}"
+                           f"{checkmark:^10}\n")
         else:
             print("Invalid index. Please provide a valid index")
 
